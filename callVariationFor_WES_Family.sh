@@ -72,16 +72,16 @@ clinvar="clinvar_20210501";
 avsnp="avsnp150";
 dbscsnv="dbscsnv11";
 #reference
-ref_hg38="/data/bioTools/resource/callSNP/hg38/index_BWA/Homo_sapiens_assembly38.fasta";
-ref_hg19="/data/bioTools/resource/callSNP/hg19/index_BWA/ucsc.hg19.fasta";
+ref_hg38="/data/bioTools/resource/hg38/index/index_BWA/Homo_sapiens_assembly38.fasta";
+ref_hg19="/data/bioTools/resource/hg19/index/index_BWA/ucsc.hg19.fasta";
 #vcf
-vcf38A="/data/bioTools/resource/callSNP/hg38/gatk/Homo_sapiens_assembly38.dbsnp138.vcf";
-vcf38B="/data/bioTools/resource/callSNP/hg38/gatk/1000G_omni2.5.hg38.vcf";
-vcf38C="/data/bioTools/resource/callSNP/hg38/gatk/hapmap_3.3.hg38.vcf";
+vcf38A="/data/bioTools/resource/hg38/refVCF/Homo_sapiens_assembly38.dbsnp138.vcf";
+vcf38B="/data/bioTools/resource/hg38/refVCF/1000G_omni2.5.hg38.vcf";
+vcf38C="/data/bioTools/resource/hg38/refVCF/hapmap_3.3.hg38.vcf";
 
-vcf19A="/data/bioTools/resource/callSNP/hg19/gatk/gz/dbsnp_138.hg19.vcf";
-vcf19B="/data/bioTools/resource/callSNP/hg19/gatk/gz/1000G_phase1.indels.hg19.sites.vcf";
-vcf19C="/data/bioTools/resource/callSNP/hg19/gatk/gz/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf";
+vcf19A="/data/bioTools/resource/hg19/refVCF/dbsnp_138.hg19.vcf";
+vcf19B="/data/bioTools/resource/hg19/refVCF/1000G_phase1.indels.hg19.sites.vcf";
+vcf19C="/data/bioTools/resource/hg19/refVCF/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf";
 #perl path
 perlPath="/data/GWASCall/SH";
 #blast path
@@ -307,11 +307,11 @@ do
             #inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
             inF="$outDir/bam/$sample/$sample.sort.markdup.bam";
             #$(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
-            if [ "$refV" == "hg19" ]; then
-                inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf19A $vcf19B $vcf19C $outDir/log/$sample)
-            else
-                inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf38A $vcf38B $vcf38C $outDir/log/$sample)
-            fi;
+            #if [ "$refV" == "hg19" ]; then
+            #    inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf19A $vcf19B $vcf19C $outDir/log/$sample)
+            #else
+            #    inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf38A $vcf38B $vcf38C $outDir/log/$sample)
+            #fi;
         fi;
         echo >&3;
     } &
