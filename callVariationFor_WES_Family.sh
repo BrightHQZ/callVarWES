@@ -88,12 +88,12 @@ perlPath="/data/GWASCall/SH";
 blastn="/data/bioTools/bin/blast/bin/blastn";
 blastdb="/data/bioTools/resource/blast/virus/virusRef";
 #exons_region
-exons19="/data/bioTools/resource/callSNP/hg19/gatk/regions/exons"
-exons38="/data/bioTools/resource/callSNP/hg38/gatk/regions/exons"
+exons19="/data/bioTools/resource/callSNP/hg19/gatk/regions"
+exons38="/data/bioTools/resource/callSNP/hg38/gatk/regions"
 #varDB
 varDB="/data/varDB_wes";
 intervals_genome="/data/bioTools/resource/index/grch38/GRCh38.bed";
-intervals_hg19_genome="/data/bioTools/resource/index/hg19/hg19.bed";
+intervals_hg19_genome="/data/bioTools/resource/callSNP/hg19/index_BWA/ucsc.hg19.bed";
 #call snp in drageModel
 DrageStr="/data/bioTools/resource/callSNP/hg19/gatk/regions/hg19_drags.str.zip"
 
@@ -207,7 +207,6 @@ fi;
 
 #outDir="$treeRoot/$outDir";
 #echo $outDir;
-
 #Check out put dir.
 
 if [ ! -d "$outDir/log" ]; then
@@ -241,7 +240,7 @@ if [ ! -z $remote ]; then
 fi;
 
 if [ -z "$probeV" ]; then
-    probeV="common";
+    probeV="exome_calling_regions.v1.hg19.interval_list";
 elif [ "$probeV" == "A" ]; then
     probeV="Agilent";
 elif [ "$probeV" == "IDTV1" ]; then
@@ -254,7 +253,7 @@ if [ "$refV" == "hg19" ]; then
     ref=$ref_hg19;
     vcf1=$vcf19A;
     intervals_exons="$exons19/$probeV";
-    caputerBed="$exons19/$probeV/$probeV.bed"
+    caputerBed="$exons19/$probeV";
     intervals_genome="/data/bioTools/resource/index/hg19/hg19.bed";
 else
     ref=$ref_hg38;
@@ -304,8 +303,8 @@ do
         fi;
         if [ "$mapModel" != "VCF" ]; then 
             #inF=$outDir"/bam/sample202112.bam";
-            inF=$(sortBam $inF $outDir"/bam/"$sample $sample $SAMTOOLS $outDir"/log")
-            inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
+            #inF=$(sortBam $inF $outDir"/bam/"$sample $sample $SAMTOOLS $outDir"/log")
+            #inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
             inF="$outDir/bam/$sample/$sample.sort.markdup.bam";
             $(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
             if [ "$refV" == "hg19" ]; then
