@@ -71,25 +71,28 @@ gnomad211="gnomad211_genome"
 clinvar="clinvar_20210501";
 avsnp="avsnp150";
 dbscsnv="dbscsnv11";
-#reference
+#hg38 reference
 ref_hg38="/data/bioTools/resource/hg38/index/index_BWA/Homo_sapiens_assembly38.fasta";
-ref_hg19="/data/bioTools/resource/hg19/index/index_BWA/ucsc.hg19.fasta";
-#vcf
+#hg38 vcf
 vcf38A="/data/bioTools/resource/hg38/refVCF/Homo_sapiens_assembly38.dbsnp138.vcf";
 vcf38B="/data/bioTools/resource/hg38/refVCF/1000G_omni2.5.hg38.vcf";
 vcf38C="/data/bioTools/resource/hg38/refVCF/hapmap_3.3.hg38.vcf";
 
+#hg19 reference
+ref_hg19="/data/bioTools/resource/hg19/index/index_BWA/ucsc.hg19.fasta";
+#hg19 vcf
 vcf19A="/data/bioTools/resource/hg19/refVCF/dbsnp_138.hg19.vcf";
 vcf19B="/data/bioTools/resource/hg19/refVCF/1000G_phase1.indels.hg19.sites.vcf";
 vcf19C="/data/bioTools/resource/hg19/refVCF/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf";
 #perl path
-perlPath="/data/GWASCall/SH";
+#perlPath="/data/GWASCall/SH";
 #blast path
-blastn="/data/bioTools/bin/blast/bin/blastn";
-blastdb="/data/bioTools/resource/blast/virus/virusRef";
-#exons_region
-exons19="/data/bioTools/resource/callSNP/hg19/gatk/regions"
-exons38="/data/bioTools/resource/callSNP/hg38/gatk/regions"
+#blastn="/data/bioTools/bin/blast/bin/blastn";
+#blastdb="/data/bioTools/resource/blast/virus/virusRef";
+#chromsome range
+chrom19="/data/bioTools/resource/hg19/regions/chroms"
+chrom38="/data/bioTools/resource/hg38/regions/chroms"
+
 #varDB
 varDB="/data/varDB_wes";
 intervals_genome="/data/bioTools/resource/index/grch38/GRCh38.bed";
@@ -230,37 +233,38 @@ if [ ! -d "$outDir/vcf" ]; then
 fi;
 
 #Check file exists and aligment model.
-if [ ! -z $remote ]; then
-    if [ !-n $fastq1 ]; then
-        fastq1=$(transFQ $fastq1 $outDir $sample"1" $remote);
-    fi;
-    if [ !-n $fastq2 ]; then
-        fastq2=$(transFQ $fastq2 $outDir $sample"2" $remote);
-    fi;
-fi;
+#if [ ! -z $remote ]; then
+#    if [ !-n $fastq1 ]; then
+#        fastq1=$(transFQ $fastq1 $outDir $sample"1" $remote);
+#    fi;
+#    if [ !-n $fastq2 ]; then
+#        fastq2=$(transFQ $fastq2 $outDir $sample"2" $remote);
+#    fi;
+#fi;
 
-if [ -z "$probeV" ]; then
-    probeV="exome_calling_regions.v1.hg19.interval_list";
-elif [ "$probeV" == "A" ]; then
-    probeV="Agilent";
-elif [ "$probeV" == "IDTV1" ]; then
-    probeV="IDT-V1"
-fi;
+#if [ -z "$probeV" ]; then
+#    probeV="exome_calling_regions.v1.hg19.interval_list";
+#elif [ "$probeV" == "A" ]; then
+#    probeV="Agilent";
+#elif [ "$probeV" == "IDTV1" ]; then
+#    probeV="IDT-V1"
+#fi;
 
 #Check refgenes version
-caputerBed="";
+#caputerBed="";
 if [ "$refV" == "hg19" ]; then
     ref=$ref_hg19;
     vcf1=$vcf19A;
-    intervals_exons="$exons19/$probeV";
-    caputerBed="$exons19/$probeV";
-    intervals_genome="/data/bioTools/resource/index/hg19/hg19.bed";
+    intervals_exons="$chrom19";
+#    caputerBed="$exons19/$probeV";
+#    intervals_genome="/data/bioTools/resource/index/hg19/hg19.bed";
 else
     ref=$ref_hg38;
     refV="hg38";
-    intervals_exons=$exons38;
-    caputerBed="$exons38/$probeV/$probeV.bed"
-    intervals_genome="";
+    vcf1=$vcf38A;
+    intervals_exons="$chrom38";
+#    caputerBed="$exons38/$probeV/$probeV.bed"
+#    intervals_genome="";
 fi;
 
 echo "Mapping model is "$mapModel;
