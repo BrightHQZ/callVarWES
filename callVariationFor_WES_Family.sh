@@ -72,8 +72,8 @@ clinvar="clinvar_20210501";
 avsnp="avsnp150";
 dbscsnv="dbscsnv11";
 #reference
-ref_hg38="/data/bioTools/resource/callSNP/hg38/index_BWA_WES/hg38_clear.fa";
-ref_hg19="/data/bioTools/resource/callSNP/hg19/index_BWA_WES/hg19_clear.fa";
+ref_hg38="/data/bioTools/resource/callSNP/hg38/index_BWA/Homo_sapiens_assembly38.fasta";
+ref_hg19="/data/bioTools/resource/callSNP/hg19/index_BWA/ucsc.hg19.fasta";
 #vcf
 vcf38A="/data/bioTools/resource/callSNP/hg38/gatk/Homo_sapiens_assembly38.dbsnp138.vcf";
 vcf38B="/data/bioTools/resource/callSNP/hg38/gatk/1000G_omni2.5.hg38.vcf";
