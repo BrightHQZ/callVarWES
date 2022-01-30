@@ -307,15 +307,15 @@ do
         fi;
         if [ "$mapModel" != "VCF" ]; then 
             #inF=$outDir"/bam/sample202112.bam";
-            #inF=$(sortBam $inF $outDir"/bam/"$sample $sample $SAMTOOLS $outDir"/log")
-            #inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
+            inF=$(sortBam $inF $outDir"/bam/"$sample $sample $SAMTOOLS $outDir"/log")
+            inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
             inF="$outDir/bam/$sample/$sample.sort.markdup.bam";
-            #$(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
-            #if [ "$refV" == "hg19" ]; then
-            #    inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf19A $vcf19B $vcf19C $outDir/log/$sample)
-            #else
-            #    inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf38A $vcf38B $vcf38C $outDir/log/$sample)
-            #fi;
+            $(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
+            if [ "$refV" == "hg19" ]; then
+                inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf19A $vcf19B $vcf19C $outDir/log/$sample)
+            else
+                inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf38A $vcf38B $vcf38C $outDir/log/$sample)
+            fi;
         fi;
         echo >&3;
     } &
