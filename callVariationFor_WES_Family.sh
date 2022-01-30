@@ -89,16 +89,18 @@ vcf19C="/data/bioTools/resource/hg19/refVCF/Mills_and_1000G_gold_standard.indels
 #blast path
 #blastn="/data/bioTools/bin/blast/bin/blastn";
 #blastdb="/data/bioTools/resource/blast/virus/virusRef";
+
 #chromsome range
-chrom19="/data/bioTools/resource/hg19/regions/chroms"
-chrom38="/data/bioTools/resource/hg38/regions/chroms"
+regions19="/data/bioTools/resource/hg19/regions"
+regions38="/data/bioTools/resource/hg38/regions"
 
 #varDB
 varDB="/data/varDB_wes";
 intervals_genome="/data/bioTools/resource/index/grch38/GRCh38.bed";
 intervals_hg19_genome="/data/bioTools/resource/callSNP/hg19/index_BWA/ucsc.hg19.bed";
 #call snp in drageModel
-DrageStr="/data/bioTools/resource/callSNP/hg19/gatk/regions/hg19_drags.str.zip"
+hg19DrageStr="/data/bioTools/resource/hg19/region/hg19_drags.str.zip"
+hg38DrageStr="/data/bioTools/resource/hg19/region/hg38_drags.str.zip"
 
 while getopts ":f:o:s:r:v:t:1:2:S:V:" opt
 do
@@ -245,9 +247,9 @@ fi;
 #if [ -z "$probeV" ]; then
 #    probeV="exome_calling_regions.v1.hg19.interval_list";
 #elif [ "$probeV" == "A" ]; then
-#    probeV="Agilent";
+#    probeV="Agilent.bed";
 #elif [ "$probeV" == "IDTV1" ]; then
-#    probeV="IDT-V1"
+#    probeV="IDT-V1.bed"
 #fi;
 
 #Check refgenes version
@@ -255,14 +257,17 @@ fi;
 if [ "$refV" == "hg19" ]; then
     ref=$ref_hg19;
     vcf1=$vcf19A;
-    intervals_exons="$chrom19";
-#    caputerBed="$exons19/$probeV";
+    caputerBed="$regions19/$probeV";
+    callIntervals="$regions19"; #Call variation
+    DrageStr=$hg19DrageStr
 #    intervals_genome="/data/bioTools/resource/index/hg19/hg19.bed";
 else
     ref=$ref_hg38;
     refV="hg38";
     vcf1=$vcf38A;
-    intervals_exons="$chrom38";
+    caputerBed="$regions38/$probeV";
+    callIntervals="$chrom38"; #Call variation
+    DrageStr=$hg38DrageStr
 #    caputerBed="$exons38/$probeV/$probeV.bed"
 #    intervals_genome="";
 fi;
@@ -310,7 +315,7 @@ do
             inF=$(sortBam $inF $outDir"/bam/"$sample $sample $SAMTOOLS $outDir"/log")
             inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
             inF="$outDir/bam/$sample/$sample.sort.markdup.bam";
-            $(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
+            #$(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
             if [ "$refV" == "hg19" ]; then
                 inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf19A $vcf19B $vcf19C $outDir/log/$sample)
             else
@@ -368,10 +373,6 @@ if [ "$mapModel" != "VCF" ]; then
     annoGATK=$(anntationSNP $inF "$outDir/vcf/$sample" $sample $refV $annovar $outDir"/log" $refGene $cytoBand $gnomad211 $clinvar $avsnp $dbscsnv);
     #echo "All analysis were finished and the annotated file in the directer of $outDir/vcf (names: $annoBcftools, $annoGATK)";
     echo "All analysis were finished and the annotated file in the directer of $outDir/vcf (names: $annoGATK)";
-
-    for sampleT in "${samples[@]}"; do
-        echo $(clearTempFile $outDir $sampleT $outDir"/log/"$sampleT $refV);
-    done;
 else
     for index in "${!fileListA[@]}"; do
         fastq1=${fileListA[index]};
@@ -380,6 +381,10 @@ else
         echo "All analysis were finished and the annotated file in the directer of $outDir/vcf (names: $annoBcftools)";
     done;
 fi;
+
+#for sampleT in "${samples[@]}"; do
+#    echo $(clearTempFile $outDir $sampleT $outDir"/log/"$sampleT $refV);
+#done;
 
 
 
