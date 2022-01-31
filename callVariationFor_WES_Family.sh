@@ -149,7 +149,7 @@ if ([ -z $fastq1 ] && [ -z $fastq2 ]) || [ -z $outDir ] || [ -z $sample ] || [ -
     echo "bash callVariationFor_WES.sh -t xxxx -1 file1.bam -o dir -s sampleID -f bam -v hg38;"
     echo "bash callVariationFor_WES.sh -t xxxx -1 file1.vcf -o dir -s sampleID -f vcf -v hg38;"
     echo "-r usename@1.1.1.1:/xxx/xxxx/ddddd.fq/bam (The file exists in the remote computer)";
-    echo "-V is the type of catch chip of exon: A is Agilent, IDTV1 is IDT-V1"
+    echo "-V is the type of catch chip of exon: A is Agilent, IDTV1 is IDT-V1, FJ is Fujun company; BR is BeiRui company; DF is ZhiYingDongFang company;"
     echo "Mul-input file names the cases will be analysised together as family. The input files should liks this: file1,file1.1,file1.2 and sampleID like this: sample1,sample2,sample3."
     echo "In the model of mul-input, the count of files and samples should equal."
     echo "Input values: -1 $fastq1  -2 $fastq2  -o $outDir  -s $sample  -t $treeRoot  -f $fileType  -v $refV  -V $probeV"
