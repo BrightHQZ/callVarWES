@@ -82,8 +82,8 @@ vcf38C="/data/bioTools/resource/hg38/refVCF/hapmap_3.3.hg38.vcf";
 ref_hg19="/data/bioTools/resource/hg19/index/index_BWA/ucsc.hg19.fasta";
 #hg19 vcf
 vcf19A="/data/bioTools/resource/hg19/refVCF/dbsnp_138.hg19.vcf";
-vcf19B="/data/bioTools/resource/hg19/refVCF/1000G_phase1.indels.hg19.sites.vcf";
-vcf19C="/data/bioTools/resource/hg19/refVCF/Mills_and_1000G_gold_standard.indels.hg19.sites.vcf";
+vcf19B="/data/bioTools/resource/hg19/refVCF/1000G_phase1.indels.hg19.vcf";
+vcf19C="/data/bioTools/resource/hg19/refVCF/Mills_and_1000G_gold_standard.indels.hg19.vcf";
 #perl path
 #perlPath="/data/GWASCall/SH";
 #blast path
@@ -99,8 +99,8 @@ varDB="/data/varDB_wes";
 intervals_genome="/data/bioTools/resource/index/grch38/GRCh38.bed";
 intervals_hg19_genome="/data/bioTools/resource/callSNP/hg19/index_BWA/ucsc.hg19.bed";
 #call snp in drageModel
-hg19DrageStr="/data/bioTools/resource/hg19/region/hg19_drags.str.zip"
-hg38DrageStr="/data/bioTools/resource/hg19/region/hg38_drags.str.zip"
+hg19DrageStr="/data/bioTools/resource/hg19/regions/hg19_drags.str.zip"
+hg38DrageStr="/data/bioTools/resource/hg38/regions/hg38_drags.str.zip"
 
 while getopts ":f:o:s:r:v:t:1:2:S:V:" opt
 do
@@ -244,13 +244,19 @@ fi;
 #    fi;
 #fi;
 
-#if [ -z "$probeV" ]; then
-#    probeV="exome_calling_regions.v1.hg19.interval_list";
-#elif [ "$probeV" == "A" ]; then
-#    probeV="Agilent.bed";
-#elif [ "$probeV" == "IDTV1" ]; then
-#    probeV="IDT-V1.bed"
-#fi;
+if [ -z "$probeV" ]; then
+    probeV="hg19_exons.bed";
+elif [ "$probeV" == "A" ]; then
+    probeV="Agilent.bed";
+elif [ "$probeV" == "IDTV1" ]; then
+    probeV="IDT-V1.bed"
+elif [ "$probeV" == "FJ" ]; then
+    probeV="FUJUN_IDTxGenIdp4_exonsCDS.bed";
+elif [ "$probeV" == "BR" ]; then
+    probeV="BeiRui_NanoWESv2-hg19.bed"
+elif [ "$probeV" == "DF" ]; then
+    probeV="zydf.bed";
+fi;
 
 #Check refgenes version
 #caputerBed="";
@@ -311,11 +317,11 @@ do
             inF=${fileListA[index]}
         fi;
         if [ "$mapModel" != "VCF" ]; then 
-            #inF=$outDir"/bam/sample202112.bam";
+            inF=$outDir"/bam/sample202112.bam";
             inF=$(sortBam $inF $outDir"/bam/"$sample $sample $SAMTOOLS $outDir"/log")
             inF=$(markDup $outDir"/bam/"$sample/$inF $outDir"/bam/"$sample $sample $sambamba $outDir"/log");
             inF="$outDir/bam/$sample/$sample.sort.markdup.bam";
-            #$(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
+            $(qualityBAM $bamdst $inF "$outDir/bam/"$sample $caputerBed);
             if [ "$refV" == "hg19" ]; then
                 inF=$(BaseRecalibrator $outDir/bam/$sample/$sample.sort.markdup.bam $outDir/bam/$sample $sample $GATK $ref $vcf19A $vcf19B $vcf19C $outDir/log/$sample)
             else
@@ -344,7 +350,7 @@ if [ "$mapModel" != "VCF" ]; then
         #DrageFile="/data/snpForWes4/bam/MQX_YKD2821/MQX_YKD2821.drags";
         #Call snp using GATK;
         echo "Calling snp using GATK...$ref";
-        callRes=$(call_SNP $inF $outDir/gvcf/$sample $sample.$refV $ref $vcf1 $GATK $intervals_exons $DrageFile $outDir"/log/"$sample);
+        callRes=$(call_SNP $inF $outDir/gvcf/$sample $sample.$refV $ref $vcf1 $GATK $callIntervals $DrageFile $outDir"/log/"$sample);
         if [ "$callRes" == "OK" ]; then
             #process g.vcf.gz files
             $(GatherVcfs $outDir/gvcf/$sample $sample.$refV $GATK $outDir/log/$sample);
